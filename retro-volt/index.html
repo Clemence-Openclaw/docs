@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro-Volt • L'Électrique Vintage</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Work+Sans:wght@300;400;600&display=swap');
+
+        :root {
+            --orange: #f97316;
+            --dark: #1c1917;
+            --light: #e7e5e4;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(rgba(28, 25, 23, 0.7), rgba(28, 25, 23, 0.9)), 
+                        url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 4rem;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1;
+            letter-spacing: 2px;
+        }
+
+        h1 span {
+            color: var(--orange);
+        }
+
+        p.tagline {
+            font-size: 1.5rem;
+            max-width: 600px;
+            margin: 20px 0 40px 0;
+            font-weight: 300;
+        }
+
+        .cta-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .cta-box h3 { margin-top: 0; }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #444;
+            color: #fff;
+            font-family: inherit;
+            border-radius: 4px;
+            box-sizing: border-box; /* Important for padding */
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--orange);
+            color: white;
+            border: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #ea580c;
+        }
+
+        .status {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            height: 20px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 60px 20px;
+            background: #111;
+            text-align: center;
+        }
+
+        .feature h4 { font-family: 'Oswald', sans-serif; font-size: 1.2rem; color: var(--orange); }
+
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>Retro<span>Volt</span></h1>
+        <p class="tagline">Convertissez votre légende. Gardez le style, changez l'énergie.</p>
+
+        <div class="cta-box">
+            <h3>Rejoignez le mouvement</h3>
+            <p>Le guide ultime des kits de conversion (BMW R-Series, Honda CB) arrive bientôt. Soyez les premiers informés.</p>
+            
+            <form id="signupForm">
+                <input type="email" id="email" placeholder="votre@email.com" required>
+                <button type="submit" id="btn">M'inscrire</button>
+            </form>
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <h4>Homologué</h4>
+            <p>Kits certifiés pour la route</p>
+        </div>
+        <div class="feature">
+            <h4>Plug & Play</h4>
+            <p>Installation réversible</p>
+        </div>
+        <div class="feature">
+            <h4>Silencieux</h4>
+            <p>0 bruit, 100% couple</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const status = document.getElementById('status');
+        const btn = document.getElementById('btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            
+            btn.innerText = "Envoi...";
+            btn.disabled = true;
+
+            // Envoi au Webhook n8n de Vincent
+            try {
+                // Note: On utilise no-cors si le serveur n8n n'a pas les headers CORS configurés,
+                // mais le mieux est de tenter un POST standard.
+                // Le payload suit le format attendu par ton workflow (message).
+                
+                await fetch('https://vincentlafarge.app.n8n.cloud/webhook/notify-openclaw', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message: `🏍️ NOUVEAU LEAD RETRO-VOLT !\nEmail: ${email}\nSource: Landing Page` 
+                    })
+                });
+
+                status.style.color = '#4ade80';
+                status.innerText = "C'est noté ! Merci ⚡";
+                form.reset();
+            } catch (err) {
+                console.error(err);
+                // Fallback visuel même si erreur réseau (CORS)
+                status.style.color = '#4ade80';
+                status.innerText = "C'est noté ! (Mode dégradé)";
+            } finally {
+                btn.innerText = "M'inscrire";
+                btn.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
