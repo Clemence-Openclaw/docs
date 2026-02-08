@@ -39,6 +39,20 @@
             margin-bottom: 80px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 40px;
+            text-align: center;
+        }
+
+        .avatar-container {
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+            object-fit: cover;
         }
 
         h1 {
@@ -173,6 +187,9 @@
 
     <div class="container">
         <header>
+            <div class="avatar-container">
+                <img src="avatar.png" alt="Clémence Avatar" class="avatar">
+            </div>
             <div class="subtitle">DOCUMENTATION TECHNIQUE v1.0</div>
             <h1>OpenClaw Stack</h1>
             <p>Architecture, Composants & Capacités de l'Agent "Clémence".</p>
