@@ -130,8 +130,15 @@
             <p>Le guide ultime des kits de conversion (BMW R-Series, Honda CB) arrive bientôt. Soyez les premiers informés.</p>
             
             <form id="signupForm">
-                <input type="email" id="email" placeholder="votre@email.com" required>
-                <button type="submit" id="btn">M'inscrire</button>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="prenom" placeholder="Prénom" required style="flex:1">
+                    <input type="text" id="nom" placeholder="Nom" required style="flex:1">
+                </div>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="tel" id="phone" placeholder="Téléphone" required>
+                <input type="text" id="zip" placeholder="Code Postal" required style="width: 100px;">
+                
+                <button type="submit" id="btn">Recevoir le Guide</button>
             </form>
             <div class="status" id="status"></div>
         </div>
@@ -159,22 +166,25 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            
+            const data = {
+                prenom: document.getElementById('prenom').value,
+                nom: document.getElementById('nom').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                zip: document.getElementById('zip').value
+            };
             
             btn.innerText = "Envoi...";
             btn.disabled = true;
 
             // Envoi au Webhook n8n de Vincent
             try {
-                // Note: On utilise no-cors si le serveur n8n n'a pas les headers CORS configurés,
-                // mais le mieux est de tenter un POST standard.
-                // Le payload suit le format attendu par ton workflow (message).
-                
                 await fetch('https://vincentlafarge.app.n8n.cloud/webhook/notify-openclaw', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        message: `🏍️ NOUVEAU LEAD RETRO-VOLT !\nEmail: ${email}\nSource: Landing Page` 
+                        message: `🏍️ LEAD RETRO-VOLT (Complet) !\n👤 ${data.prenom} ${data.nom}\n📧 ${data.email}\n📞 ${data.phone}\n📍 ${data.zip}` 
                     })
                 });
 
